@@ -1,0 +1,299 @@
+@import url('https://fonts.googleapis.com/css2?family=Inspiration&family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Vintage Sunburst — 1970s editorial theme (Tailwind v4)
+   Faded parchment paper with terracotta, mustard, brick, and seafoam accents
+   over a grunge-brown ink. Everything cascades from these tokens.
+--------------------------------------------------------------------------- */
+@theme {
+  --color-void: #f4efe6; /* page — faded parchment / vintage cream */
+  --color-carbon: #e8dfd0; /* raised plates, cards — slightly darker cream */
+  --color-ash: #3e2c23; /* hairlines, rules, borders — charred umber */
+  --color-bone: #2b1e16; /* primary type — espresso / deep warm charcoal */
+  --color-smoke: #7a6b5e; /* secondary type, metadata — warm gray */
+  --color-phosphor: #d96c4a; /* accent — faded terracotta / rust orange */
+  --color-crimson: #a33b20; /* vintage marquee — dusty brick red */
+  --color-beige: #d4c4a8; /* warm cream — aged paper */
+  --color-amber: #eca72c; /* vintage accent — muted mustard yellow */
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-space-mono), "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-script: "Inspiration", cursive;
+}
+
+.font-inspiration {
+  font-family: "Inspiration", cursive;
+}
+
+
+/* ---------------------------------------------------------------------------
+   Typographic primitives
+
+   The reference language is uppercase, wide-tracked mono for anything
+   structural (labels, indices, bracketed asides) and very tight, very heavy
+   display type for headings. These two classes carry that everywhere.
+--------------------------------------------------------------------------- */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem; /* 10px */
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+}
+@media (min-width: 768px) {
+  .label {
+    font-size: 0.6875rem; /* 11px */
+  }
+}
+
+/* Oversized headline type: heavy, tight, and optically flush on the left. */
+.display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.84;
+  letter-spacing: -0.035em;
+}
+
+/* ---------------------------------------------------------------------------
+   CRT screen treatments
+
+   All of these live inside the TV's screen inset (see components/CRT.tsx) and
+   are layered over the video: scanlines, phosphor bloom, vignette, flicker.
+--------------------------------------------------------------------------- */
+
+/* Horizontal raster lines. 3px period reads as a CRT without moiré at most
+   sizes; it is purely decorative so it sits under `pointer-events-none`. */
+.crt-scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.42) 0px,
+    rgba(0, 0, 0, 0.42) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* A single bright line sweeping down the tube, as on a mistuned set. */
+@keyframes crt-sweep {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(2000%);
+  }
+}
+.crt-sweep {
+  animation: crt-sweep 7s linear infinite;
+}
+
+/* CRT entrance — short spring rise so the set is visible after the loader
+   clears. The long Eric-Cole-style delay felt broken in dev (4.5s of nothing). */
+@keyframes crt-entrance {
+  0% {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.crt-entrance {
+  animation: crt-entrance 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
+}
+
+/* Buffering static noise — removed; loader is now a centered percentage. */
+
+/* Boot-up percentage counter — centered, monospace, sits over the video */
+.crt-loader-text {
+  font-family: var(--font-mono);
+  font-size: clamp(0.9rem, 2vw, 1.5rem);
+  letter-spacing: 0.04em;
+  color: var(--color-bone);
+  opacity: 0.85;
+  text-shadow: 0 0 8px rgba(217, 164, 65, 0.35);
+}
+
+/* Loader dismiss — soft fade so the video show-through isn't abrupt */
+@keyframes crt-loader-out {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+.crt-loader {
+  transition: opacity 0.45s ease-out;
+}
+
+/* Mains-hum brightness wobble. Deliberately shallow — a deep flicker reads as
+   a broken video element rather than an old TV. */
+@keyframes crt-flicker {
+  0%,
+  100% {
+    opacity: 0.13;
+  }
+  18% {
+    opacity: 0.2;
+  }
+  37% {
+    opacity: 0.1;
+  }
+  56% {
+    opacity: 0.22;
+  }
+  73% {
+    opacity: 0.12;
+  }
+}
+.crt-flicker {
+  animation: crt-flicker 4.2s steps(3, end) infinite;
+}
+
+/* Amber bloom spilling off the tube into the dark room behind the set. */
+@keyframes room-bloom {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scale(1.05);
+  }
+}
+.animate-room-bloom {
+  animation: room-bloom 6s ease-in-out infinite;
+}
+
+/* Standby / power LED. */
+@keyframes led-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.animate-led {
+  animation: led-pulse 2.4s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------------------
+   Motion — scroll reveals and marquees
+--------------------------------------------------------------------------- */
+
+/* Scroll-reveal: elements start displaced + transparent, snap in when observed */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.85s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.85s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Per-letter stagger for fractured section headings. The index is set inline
+   by SectionHeading so each glyph inherits its own delay. */
+.glyph {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.4em);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: calc(var(--glyph-index, 0) * 26ms);
+}
+.is-in .glyph {
+  opacity: 1;
+  transform: none;
+}
+
+/* Toolbox marquee — the track is duplicated, so -50% loops seamlessly */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+.marquee-reverse {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Lightbox motion */
+@keyframes lb-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes lb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Respect users who ask for less motion. Reveals resolve to their end state
+   and every ambient loop stops; the video itself keeps playing, since it is
+   the content rather than decoration. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .glyph {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .marquee-track,
+  .crt-sweep,
+  .crt-flicker,
+  .animate-room-bloom,
+  .animate-led {
+    animation: none !important;
+  }
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-void);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-phosphor);
+  color: var(--color-void);
+}
+
+/* Keyboard focus needs to survive on a near-black page. */
+:focus-visible {
+  outline: 2px solid var(--color-phosphor);
+  outline-offset: 3px;
+}
