@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { IDENTITY } from "@/lib/content";
+import { assetPath } from "@/lib/basePath";
 
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -166,8 +167,8 @@ export default function Hero() {
                 <video
                   ref={videoRef}
                   className="h-full w-full object-cover scale-[1.02]"
-                  src="/videos/hero.mp4"
-                  poster="/videos/hero.jpg"
+                  src={assetPath("/videos/hero.mp4")}
+                  poster={assetPath("/videos/hero.jpg")}
                   autoPlay
                   loop
                   muted
@@ -194,7 +195,7 @@ export default function Hero() {
               {/* ---- The Vintage TV Cabinet Frame Overlay ---- */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/tv/eric-tv-frame.png"
+                src={assetPath("/tv/eric-tv-frame.png")}
                 alt="Vintage Television Frame"
                 className="pointer-events-none absolute inset-0 z-20 h-full w-full select-none object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.7)]"
                 draggable={false}

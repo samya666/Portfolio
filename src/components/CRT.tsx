@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type ReactNode } from "react";
+import { assetPath } from "@/lib/basePath";
 
 /**
  * A vintage CRT television playing a looping video behind its screen.
@@ -70,7 +71,7 @@ export default function CRT({
       {/* TV frame sits on top — alpha cut-out reveals the video behind */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/tv/vintage-tv-frame.png"
+        src={assetPath("/tv/vintage-tv-frame.png")}
         alt=""
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-10 h-full w-full select-none"
