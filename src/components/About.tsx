@@ -2,6 +2,7 @@ import Image from "next/image";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 import { IDENTITY, STATEMENT } from "@/lib/content";
+import { assetPath } from "@/lib/basePath";
 
 const MARKERS = [
   { k: "Based in", v: "Santipur, Nadia · WB" },
@@ -25,7 +26,7 @@ export default function About() {
         <Reveal className="md:col-span-5">
           <div className="relative overflow-hidden bg-carbon ring-1 ring-ash">
             <Image
-              src="/artist-hero.png"
+              src={assetPath("/artist-hero.png")}
               alt={`${IDENTITY.name}, ${IDENTITY.role}`}
               width={816}
               height={1296}
